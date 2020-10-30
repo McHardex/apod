@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RootState } from 'reducers';
 import { loadProducts } from 'actions/product';
 import { connect } from 'react-redux';
@@ -19,8 +19,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const Products: React.FunctionComponent<Props> = ({ cart }) => {
-  return <div>{cart}</div>;
+const Products: React.FC<Props> = ({ cart, loadProducts }) => {
+  useEffect(() => {
+    loadProducts();
+  });
+  return <div>my cart here man</div>;
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Products);

@@ -2,6 +2,9 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+// Components
+import Product from 'components/Product';
+
 const App: React.FunctionComponent<unknown> = () => {
   return (
     <div className="App">
@@ -19,6 +22,7 @@ const App: React.FunctionComponent<unknown> = () => {
           Learn React
         </a>
       </header>
+      <Product />
     </div>
   );
 };
