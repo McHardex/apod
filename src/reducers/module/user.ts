@@ -7,10 +7,7 @@ type UserState = {
 
 const initialState: UserState = { username: null };
 
-export function userReducer(
-  state = initialState,
-  action: UserAction
-): UserState {
+export function userReducer(state = initialState, action: UserAction): UserState {
   switch (action.type) {
     case types.LOGIN:
       return { username: action.payload };

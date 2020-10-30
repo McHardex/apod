@@ -17,8 +17,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   );
 };
 
-type Props = ReturnType<typeof mapStateToProps> &
-  ReturnType<typeof mapDispatchToProps>;
+type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
 const Products: React.FunctionComponent<Props> = ({ cart }) => {
   return <div>{cart}</div>;
