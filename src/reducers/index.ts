@@ -1,10 +1,8 @@
 import { combineReducers } from 'redux';
-import { userReducer } from './module/user';
-import { productsReducer } from './module/product';
+import { apodReducer } from './module/apod';
 
 export const rootReducer = combineReducers({
-  user: userReducer,
-  products: productsReducer
+  pictures: apodReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
