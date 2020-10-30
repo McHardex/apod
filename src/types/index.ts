@@ -6,6 +6,9 @@ export function typedAction<T extends string, P extends any>(
   payload: P
 ): { type: T; payload: P };
 
-export function typedAction(type: string, payload?: any): TypedActionReturnType {
+export function typedAction(
+  type: string,
+  payload?: any
+): TypedActionReturnType {
   return { type, payload };
 }

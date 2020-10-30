@@ -17,7 +17,10 @@ const initialState: apodState = {
   }
 };
 
-export function apodReducer(state = initialState, action: ApodAction): apodState {
+export function apodReducer(
+  state = initialState,
+  action: ApodAction
+): apodState {
   switch (action.type) {
     case types.GET_PICTURE_OF_THE_DAY:
       return {

@@ -1,0 +1,90 @@
+.app-container {
+  width: 70%;
+  margin: 0 auto;
+  height: 100vh;
+  padding: 5% 0;
+  box-sizing: border-box;
+
+  h1 {
+    text-align: center;
+    margin: 0;
+  }
+
+  .gallery-container {
+    width: 100%;
+    margin: 0 auto;
+    height: 640px;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    button.previous {
+      position: absolute;
+      left: 0;
+    }
+
+    button.next {
+      position: absolute;
+      right: 0;
+    }
+
+    img,
+    video {
+      height: 90%;
+      width: 80%;
+      margin: 0 auto;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  .buttons {
+    width: 75%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .custom-btn {
+    background: #f01085;
+    color: #fff;
+    padding: 10px 20px;
+    border: 1px solid #fff;
+    outline: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+
+    // &:focus {
+    //   opacity: 0.7;
+    // }
+
+    // &:hover {
+    //   opacity: 0.7;
+    // }
+  }
+
+  .favorites {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+
+    button {
+      background: none;
+      border: none;
+      outline: none;
+    }
+
+    img {
+      flex: 0 0 auto;
+      width: 150px;
+      height: 100px;
+      object-fit: cover;
+      object-position: center;
+      cursor: pointer;
+    }
+  }
+}
