@@ -1,4 +1,3 @@
-export const LOGIN = 'user/LOGIN';
-export const LOGOUT = 'user/LOGOUT';
-export const ADD_PRODUCTS = 'product/ADD_PRODUCTS';
-export const ADD_TO_CART = 'product/ADD_TO_CART';
+export const GET_PICTURE_OF_THE_DAY = 'apod/GET_PICTURE_OF_THE_DAY';
+export const GET_PICTURE_OF_THE_DAY_SUCCESS = 'apod/GET_PICTURE_OF_THE_DAY_SUCCESS';
+export const GET_PICTURE_OF_THE_DAY_FAILURE = 'apod/GET_PICTURE_OF_THE_DAY_FAILURE';

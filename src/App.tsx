@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 
 // Components
-import Product from 'components/Product';
+import APOD from 'components/Apod';
 
 const App: React.FunctionComponent<unknown> = () => {
   return (
@@ -21,8 +21,8 @@ const App: React.FunctionComponent<unknown> = () => {
         >
           Learn React
         </a>
+        <APOD />
       </header>
-      <Product />
     </div>
   );
 };

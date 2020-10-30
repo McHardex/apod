@@ -1,4 +1,4 @@
-export type TypedActionReturnType = { type: string; payload?: any };
+type TypedActionReturnType = { type: string; payload?: any };
 
 export function typedAction<T extends string>(type: T): { type: T };
 export function typedAction<T extends string, P extends any>(
