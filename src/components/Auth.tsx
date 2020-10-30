@@ -11,7 +11,7 @@ const mapDispatchToProps = { login, logout };
 
 type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps;
 
-const Auth: React.FunctionComponent<Props> = ({ username }) => {
+const Auth: React.FC<Props> = ({ username }) => {
   return <div>{username}</div>;
 };
 

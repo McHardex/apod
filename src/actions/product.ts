@@ -2,6 +2,7 @@ import { Dispatch, AnyAction } from 'redux';
 import { typedAction, TypedActionReturnType } from 'types';
 import { Product } from 'reducers/module/product';
 import * as types from 'actionTypes';
+import http from 'api';
 
 const addProducts = (products: Product[]): TypedActionReturnType => {
   return typedAction(types.ADD_PRODUCTS, products);
@@ -15,6 +16,7 @@ export type ProductAction = ReturnType<typeof addProducts | typeof addToCart>;
 
 export const loadProducts = () => {
   return (dispatch: Dispatch<AnyAction>): any => {
+    http().get('/bkunmi');
     setTimeout(() => {
       dispatch(
         addProducts([
