@@ -1,0 +1,53 @@
+.favorites-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.favorites {
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+
+  .favorite-image__wrapper {
+    background: none;
+    border: none;
+    outline: none;
+    position: relative;
+  }
+
+  img {
+    flex: 0 0 auto;
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    object-position: center;
+    cursor: pointer;
+
+    &:hover ~ .delete {
+      background: #000;
+    }
+  }
+
+  .delete {
+    background: red;
+    opacity: 1;
+    animation: fadeIn 2s;
+    color: #fff;
+    border: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
