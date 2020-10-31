@@ -41,6 +41,7 @@ export function apodReducer(
       return {
         ...state,
         pictureOfTheDay: {
+          picture: action.payload,
           loading: false
         }
       };

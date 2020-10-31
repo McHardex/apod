@@ -11,15 +11,12 @@ export const getPictureOfTheDay = (date: string) => async (
   dispatch(typedAction(types.GET_PICTURE_OF_THE_DAY));
   try {
     const res = await apodService.getPictureOfTheDay(date);
-    const payload = {
-      original: res.data.url,
-      thumbnail: res.data.url,
-      ...res.data
-    };
     localStorage.setItem('pictureOfTheDay', JSON.stringify(res.data));
-    dispatch(typedAction(types.GET_PICTURE_OF_THE_DAY_SUCCESS, payload));
+    dispatch(typedAction(types.GET_PICTURE_OF_THE_DAY_SUCCESS, res.data));
     return res.data;
   } catch (error) {
-    console.log(error.response, 'error here \n\n\n\n'); // eslint-disable-line no-console
+    dispatch(
+      typedAction(types.GET_PICTURE_OF_THE_DAY_FAILURE, error.response.data)
+    );
   }
 };

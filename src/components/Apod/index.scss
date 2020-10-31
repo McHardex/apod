@@ -55,36 +55,5 @@
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
-
-    // &:focus {
-    //   opacity: 0.7;
-    // }
-
-    // &:hover {
-    //   opacity: 0.7;
-    // }
-  }
-
-  .favorites {
-    margin-top: 30px;
-    width: 100%;
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-
-    button {
-      background: none;
-      border: none;
-      outline: none;
-    }
-
-    img {
-      flex: 0 0 auto;
-      width: 150px;
-      height: 100px;
-      object-fit: cover;
-      object-position: center;
-      cursor: pointer;
-    }
   }
 }
