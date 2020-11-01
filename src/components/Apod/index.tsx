@@ -41,17 +41,39 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   );
 };
 
-type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
+type Props = {
+  getPictureOfTheDay: (date: string) => void;
+  picture: Picture;
+  isLoading: boolean;
+};
+
 type HoverValue = {
   id: string;
   date: string;
 };
 
-const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
+const defaultPicture = {
+  id: '',
+  msg: '',
+  copyright: '',
+  date: '',
+  explanation: '',
+  hdurl: '',
+  media_type: '',
+  service_version: '',
+  title: '',
+  url: ''
+};
+
+export const Apod: React.FC<Props> = ({
+  getPictureOfTheDay,
+  picture = defaultPicture,
+  isLoading
+}) => {
+  const initialDateValue = localStorage.getItem('pictureOfTheDay');
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
-  const [pictureOfTheDay, setPictureOfTheDay] = useState(picture);
   const [dateValue, setDateValue] = useState(
-    JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}').date
+    initialDateValue ? JSON.parse(initialDateValue).date : new Date()
   );
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favorites') || '[]'));
 
@@ -65,19 +87,18 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
     const storedPictureOfTheDay = JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}');
 
     if (storedPictureOfTheDay.url) {
-      setPictureOfTheDay(storedPictureOfTheDay);
       setDateValue(storedPictureOfTheDay.date);
     } else {
       const currentDate = formatDate(new Date());
       setDateValue(currentDate);
       getPictureOfTheDay(currentDate);
+      console.log('got here on mount');
     }
     getFavoritePictures();
   }, []);
 
   const getUpdatedPictureOfTheDay = async () => {
-    const res = await getPictureOfTheDay(dateValue);
-    setPictureOfTheDay(res);
+    getPictureOfTheDay(dateValue || formatDate(new Date()));
   };
 
   useEffect(() => {
@@ -114,7 +135,6 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
   // preview favorite picture of the day
   const previewFavoritePicture = (date: string) => {
     const selectedFavorite = favorites.find((favorite: Picture) => favorite.date === date);
-    setPictureOfTheDay(selectedFavorite);
     setDateValue(selectedFavorite.date);
   };
 
@@ -174,6 +194,24 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
     });
   };
 
+  if (isLoading)
+    return (
+      <div className="app-container">
+        <Loader />;
+      </div>
+    );
+
+  if (!picture.title)
+    return (
+      <div className="app-container">
+        <RenderErrorMessage
+          prevDay={handlePreviousDay}
+          nextDay={handleNextDay}
+          errorMessage={picture.msg!}
+        />
+      </div>
+    );
+
   return (
     <div className="app-container">
       {hoverValue.id && (
@@ -181,79 +219,66 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
           <Popup date={hoverValue.date} />
         </Portal>
       )}
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          {!pictureOfTheDay?.title && !isLoading ? (
-            <RenderErrorMessage
-              prevDay={handlePreviousDay}
-              nextDay={handleNextDay}
-              errorMessage={picture.msg}
-            />
+      <div className="picture-container">
+        <h1>{picture.title}</h1>
+        <div className="gallery-container">
+          {/* previous day */}
+          <button
+            role="button"
+            className="back-btn"
+            id="previous-picture"
+            data-testid="previous-picture"
+            data-id={previousDay(dateValue)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={handlePreviousDay}
+          >
+            <LeftChevron width="20px" />
+          </button>
+          {picture.media_type === 'video' ? (
+            <video controls autoPlay loop muted preload="auto">
+              <source src={picture.url} type="video/mp4" />
+              <source src={picture.url} type="video/webm" />
+              <p>
+                Your browser doesn't support HTML5 video. Here is a&nbsp;
+                <a href={picture.url}>link to the video</a>&nbsp; instead.
+              </p>
+            </video>
           ) : (
-            <div className="picture-container">
-              <h1>{pictureOfTheDay.title}</h1>
-              <div className="gallery-container">
-                {/* previous day */}
-                <button
-                  role="button"
-                  className="back-btn"
-                  id="previous-picture"
-                  data-id={previousDay(dateValue)}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  onClick={handlePreviousDay}
-                >
-                  <LeftChevron width="20px" height="auto" />
-                </button>
-                {pictureOfTheDay.media_type === 'video' ? (
-                  <video controls autoPlay loop muted preload="auto">
-                    <source src={pictureOfTheDay.url} type="video/mp4" />
-                    <source src={pictureOfTheDay.url} type="video/webm" />
-                    <p>
-                      Your browser doesn't support HTML5 video. Here is a&nbsp;
-                      <a href={pictureOfTheDay.url}>link to the video</a>&nbsp; instead.
-                    </p>
-                  </video>
-                ) : (
-                  <img src={pictureOfTheDay.url} alt={pictureOfTheDay.title} />
-                )}
-
-                {/* next day */}
-                <button
-                  role="button"
-                  className="next-btn"
-                  id="next-picture"
-                  data-id={nextDay(dateValue)}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  onClick={handleNextDay}
-                >
-                  <RightChevron width="20px" height="auto" />
-                </button>
-                {/* end */}
-              </div>
-              <div className="buttons">
-                <button className="custom-btn" onClick={addFavorite}>
-                  Set favourite
-                </button>
-                <input
-                  type="date"
-                  className="custom-btn"
-                  min={formatDate(new Date('1995-06-16'))}
-                  max={formatDate(new Date())}
-                  value={dateValue}
-                  onChange={handleDateChange}
-                />
-              </div>
-              <div className="description">
-                <p>{pictureOfTheDay.explanation}</p>
-              </div>
-            </div>
+            <img src={picture.url} alt={picture.title} />
           )}
-        </>
-      )}
+
+          {/* next day */}
+          <button
+            role="button"
+            className="next-btn"
+            id="next-picture"
+            data-id={nextDay(dateValue)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={handleNextDay}
+          >
+            <RightChevron width="20px" />
+          </button>
+          {/* end */}
+        </div>
+        <div className="buttons">
+          <button className="custom-btn" onClick={addFavorite}>
+            Set favourite
+          </button>
+          <input
+            type="date"
+            className="custom-btn"
+            min={formatDate(new Date('1995-06-16'))}
+            max={formatDate(new Date())}
+            value={dateValue ? dateValue : ''}
+            onChange={handleDateChange}
+          />
+        </div>
+        <div className="description">
+          <p>{picture.explanation}</p>
+        </div>
+      </div>
       {favorites.length > 0 && (
         <FavoritePictures
           favorites={favorites}

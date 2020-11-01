@@ -6,6 +6,7 @@ export function typedAction(type: string, payload?: any): TypedActionReturnType 
 
 export type Picture = {
   id?: string;
+  msg?: string;
   copyright: string;
   date: string;
   explanation: string;
