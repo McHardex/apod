@@ -1,5 +1,6 @@
 import React from 'react';
 import { Picture } from 'types';
+import { ReactComponent as DeleteBtn } from 'images/dustbin.svg';
 import './index.scss';
 
 type Props = {
@@ -19,7 +20,10 @@ const FavoritePictures: React.FC<Props> = ({
     <div className="favorites-container">
       <div className="favorites-header">
         <h3>Favorite Picture(s) of the Day</h3>
-        <button onClick={deleteAllFavorites}>Clear Favorites</button>
+        <button onClick={deleteAllFavorites} className="delete-all">
+          Clear Favorites
+          <DeleteBtn width="20px" height="20px" fill="#fff" stroke="#fff" />
+        </button>
       </div>
       <div className="favorites">
         {favorites.map((favorite: Picture) => (
