@@ -5,6 +5,10 @@ import { Picture } from 'types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+// components
+import RenderErrorMessage from 'components/RenderErrorMessage';
+import FavoritePictures from 'components/FavoritePictures';
+
 // utils
 import { formatDate, nextDay, previousDay } from 'utilities';
 
@@ -14,11 +18,6 @@ import { getPictureOfTheDay } from 'actions/apod';
 // services
 import firebaseService from 'services/firebaseService';
 
-// components
-import RenderErrorMessage from 'components/RenderErrorMessage';
-import FavoritePictures from 'components/FavoritePictures';
-
-// style
 import './index.scss';
 
 const mapStateToProps = (state: RootState) => ({
@@ -151,7 +150,9 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
   return (
     <div className="app-container">
       {isLoading ? (
-        <h1>Loading................</h1>
+        <div className="loader">
+          <h1>Loading................</h1>
+        </div>
       ) : (
         <>
           {!pictureOfTheDay?.title && !isLoading ? (
@@ -161,12 +162,19 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
               errorMessage={picture.msg}
             />
           ) : (
-            <>
+            <div className="picture-container">
               <h1>{pictureOfTheDay.title}</h1>
               <div className="gallery-container">
-                <button className="previous" onClick={handlePreviousDay}>
-                  prev date
-                </button>
+                {/* previous day */}
+                <div className="back-btn">
+                  <button className="previous" onClick={handlePreviousDay}>
+                    prev date{' '}
+                  </button>
+                  <span>
+                    <img src={pictureOfTheDay.url} alt={pictureOfTheDay.title} />
+                  </span>
+                </div>
+                {/* end */}
                 {pictureOfTheDay.media_type === 'video' ? (
                   <video controls autoPlay loop muted preload="auto">
                     <source src={pictureOfTheDay.url} type="video/mp4" />
@@ -177,15 +185,23 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
                     </p>
                   </video>
                 ) : (
-                  <img src={pictureOfTheDay.url} />
+                  <img src={pictureOfTheDay.url} alt={pictureOfTheDay.title} />
                 )}
-                <button className="next" onClick={handleNextDay}>
-                  Next date
-                </button>
+
+                {/* next day */}
+                <div className="next-btn">
+                  <button className="next" onClick={handleNextDay}>
+                    next date
+                  </button>
+                  <span>
+                    <img src={pictureOfTheDay.url} alt={pictureOfTheDay.title} />
+                  </span>
+                </div>
+                {/* end */}
               </div>
               <div className="buttons">
                 <button className="custom-btn" onClick={addFavorite}>
-                  Make favourite
+                  Set favourite
                 </button>
                 <input
                   type="date"
@@ -199,16 +215,18 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
               <div className="description">
                 <p>{pictureOfTheDay.explanation}</p>
               </div>
-            </>
+            </div>
           )}
         </>
       )}
-      <FavoritePictures
-        favorites={favorites}
-        deleteSingleFavorite={deleteSingleFavorite}
-        deleteAllFavorites={deleteAllFavorites}
-        previewFavoritePicture={previewFavoritePicture}
-      />
+      {favorites.length > 0 && (
+        <FavoritePictures
+          favorites={favorites}
+          deleteSingleFavorite={deleteSingleFavorite}
+          deleteAllFavorites={deleteAllFavorites}
+          previewFavoritePicture={previewFavoritePicture}
+        />
+      )}
     </div>
   );
 };

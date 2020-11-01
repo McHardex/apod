@@ -16,30 +16,27 @@ const FavoritePictures: React.FC<Props> = ({
   deleteSingleFavorite
 }) => {
   return (
-    <div>
-      {favorites.length > 0 && (
-        <>
-          <div className="favorites-header">
-            <h3>Favorites</h3>
-            <button onClick={deleteAllFavorites}>Clear Favorites</button>
+    <div className="favorites-container">
+      <div className="favorites-header">
+        <h3>Favorite Picture(s) of the Day</h3>
+        <button onClick={deleteAllFavorites}>Clear Favorites</button>
+      </div>
+      <div className="favorites">
+        {favorites.map((favorite: Picture) => (
+          <div
+            className="favorite-image__wrapper"
+            role="button"
+            key={favorite.title}
+            onClick={() => previewFavoritePicture(favorite.date)}
+          >
+            <img className="thumbnail" src={favorite.url} alt={favorite.title} />
+            <button className="delete" onClick={(e) => deleteSingleFavorite(e, favorite.id!)}>
+              Delete
+            </button>
+            <img src={favorite.url} alt={favorite.title} className="large-img" />
           </div>
-          <div className="favorites">
-            {favorites.map((favorite: Picture) => (
-              <div
-                className="favorite-image__wrapper"
-                role="button"
-                key={favorite.title}
-                onClick={() => previewFavoritePicture(favorite.date)}
-              >
-                <img src={favorite.url} />
-                <button className="delete" onClick={(e) => deleteSingleFavorite(e, favorite.id!)}>
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+        ))}
+      </div>
     </div>
   );
 };
