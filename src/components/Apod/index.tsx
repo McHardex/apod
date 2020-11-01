@@ -5,6 +5,12 @@ import { Picture } from 'types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 
+// components
+import RenderErrorMessage from 'components/RenderErrorMessage';
+import FavoritePictures from 'components/FavoritePictures';
+import Portal from 'components/Portal';
+import Popup from 'components/Popup';
+
 // utils
 import { formatDate, nextDay, previousDay } from 'utilities';
 
@@ -14,12 +20,11 @@ import { getPictureOfTheDay } from 'actions/apod';
 // services
 import firebaseService from 'services/firebaseService';
 
-// components
-import RenderErrorMessage from 'components/RenderErrorMessage';
-import FavoritePictures from 'components/FavoritePictures';
-
-// style
 import './index.scss';
+
+// images
+import { ReactComponent as LeftChevron } from 'images/left-chevron.svg';
+import { ReactComponent as RightChevron } from 'images/right-chevron.svg';
 
 const mapStateToProps = (state: RootState) => ({
   picture: state.pictures.pictureOfTheDay.picture,
@@ -36,10 +41,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 };
 
 type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
-
-const date = new Date();
+type HoverValue = {
+  id: string;
+  date: string;
+};
 
 const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
+  const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
   const [pictureOfTheDay, setPictureOfTheDay] = useState(picture);
   const [dateValue, setDateValue] = useState(
     JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}').date
@@ -148,10 +156,34 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
       .catch((e) => console.log(e));
   };
 
+  const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const el = e.currentTarget as HTMLButtonElement;
+    const dataValue = el.getAttribute('data-id');
+    setHoverValues({
+      id: el.id,
+      date: dataValue!
+    });
+  };
+
+  const handleMouseLeave = () => {
+    // reset hover state
+    setHoverValues({
+      id: '',
+      date: ''
+    });
+  };
+
   return (
     <div className="app-container">
+      {hoverValue.id && (
+        <Portal id={hoverValue.id}>
+          <Popup date={hoverValue.date} />
+        </Portal>
+      )}
       {isLoading ? (
-        <h1>Loading................</h1>
+        <div className="loader">
+          <h1>Loading................</h1>
+        </div>
       ) : (
         <>
           {!pictureOfTheDay?.title && !isLoading ? (
@@ -161,11 +193,20 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
               errorMessage={picture.msg}
             />
           ) : (
-            <>
+            <div className="picture-container">
               <h1>{pictureOfTheDay.title}</h1>
               <div className="gallery-container">
-                <button className="previous" onClick={handlePreviousDay}>
-                  prev date
+                {/* previous day */}
+                <button
+                  role="button"
+                  className="back-btn"
+                  id="previous-picture"
+                  data-id={previousDay(dateValue)}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={handlePreviousDay}
+                >
+                  <LeftChevron width="20px" height="auto" />
                 </button>
                 {pictureOfTheDay.media_type === 'video' ? (
                   <video controls autoPlay loop muted preload="auto">
@@ -177,21 +218,32 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
                     </p>
                   </video>
                 ) : (
-                  <img src={pictureOfTheDay.url} />
+                  <img src={pictureOfTheDay.url} alt={pictureOfTheDay.title} />
                 )}
-                <button className="next" onClick={handleNextDay}>
-                  Next date
+
+                {/* next day */}
+                <button
+                  role="button"
+                  className="next-btn"
+                  id="next-picture"
+                  data-id={nextDay(dateValue)}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={handleNextDay}
+                >
+                  <RightChevron width="20px" height="auto" />
                 </button>
+                {/* end */}
               </div>
               <div className="buttons">
                 <button className="custom-btn" onClick={addFavorite}>
-                  Make favourite
+                  Set favourite
                 </button>
                 <input
                   type="date"
                   className="custom-btn"
-                  min="16-06-1995"
-                  max={formatDate(date)}
+                  min={formatDate(new Date('1995-06-16'))}
+                  max={formatDate(new Date())}
                   value={dateValue}
                   onChange={handleDateChange}
                 />
@@ -199,16 +251,18 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
               <div className="description">
                 <p>{pictureOfTheDay.explanation}</p>
               </div>
-            </>
+            </div>
           )}
         </>
       )}
-      <FavoritePictures
-        favorites={favorites}
-        deleteSingleFavorite={deleteSingleFavorite}
-        deleteAllFavorites={deleteAllFavorites}
-        previewFavoritePicture={previewFavoritePicture}
-      />
+      {favorites.length > 0 && (
+        <FavoritePictures
+          favorites={favorites}
+          deleteSingleFavorite={deleteSingleFavorite}
+          deleteAllFavorites={deleteAllFavorites}
+          previewFavoritePicture={previewFavoritePicture}
+        />
+      )}
     </div>
   );
 };

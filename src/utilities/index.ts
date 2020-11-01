@@ -13,7 +13,7 @@ export const formatDate = (date: Date) => {
   const getMonth = new Date(date).getMonth();
   const getDate = new Date(date).getDate();
 
-  return `${getFullYear}-${getMonth + 1}-${getDate}`;
+  return `${getFullYear}-${getMonth + 1}-${formatDay(getDate)}`;
 };
 
 export const nextDay = (date: string) => {
