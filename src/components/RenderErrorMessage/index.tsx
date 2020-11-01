@@ -6,11 +6,7 @@ type Props = {
   errorMessage: string;
 };
 
-const RenderErrorMessage: React.FC<Props> = ({
-  prevDay,
-  nextDay,
-  errorMessage
-}) => {
+const RenderErrorMessage: React.FC<Props> = ({ prevDay, nextDay, errorMessage }) => {
   return (
     <div className="error">
       <button className="next" onClick={prevDay}>
