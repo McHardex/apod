@@ -4,19 +4,16 @@ import './index.scss';
 
 type Props = {
   favorites: Picture[];
-  deleteAllFavoritePictures: () => void;
+  deleteAllFavorites: () => void;
   previewFavoritePicture: (date: string) => void;
-  removeFavoritePicture: (
-    e: React.MouseEvent<HTMLButtonElement>,
-    date: string
-  ) => void;
+  deleteSingleFavorite: (e: React.MouseEvent<HTMLButtonElement>, date: string) => void;
 };
 
 const FavoritePictures: React.FC<Props> = ({
   favorites,
-  deleteAllFavoritePictures,
+  deleteAllFavorites,
   previewFavoritePicture,
-  removeFavoritePicture
+  deleteSingleFavorite
 }) => {
   return (
     <div>
@@ -24,7 +21,7 @@ const FavoritePictures: React.FC<Props> = ({
         <>
           <div className="favorites-header">
             <h3>Favorites</h3>
-            <button onClick={deleteAllFavoritePictures}>Clear Favorites</button>
+            <button onClick={deleteAllFavorites}>Clear Favorites</button>
           </div>
           <div className="favorites">
             {favorites.map((favorite: Picture) => (
@@ -35,10 +32,7 @@ const FavoritePictures: React.FC<Props> = ({
                 onClick={() => previewFavoritePicture(favorite.date)}
               >
                 <img src={favorite.url} />
-                <button
-                  className="delete"
-                  onClick={(e) => removeFavoritePicture(e, favorite.date)}
-                >
+                <button className="delete" onClick={(e) => deleteSingleFavorite(e, favorite.id!)}>
                   Delete
                 </button>
               </div>

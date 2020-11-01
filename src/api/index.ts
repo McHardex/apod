@@ -29,10 +29,7 @@ const http = () => {
     return Promise.reject(error);
   };
 
-  axiosInstance.interceptors.response.use(
-    (response) => response,
-    unauthorizedRequestInterceptor
-  );
+  axiosInstance.interceptors.response.use((response) => response, unauthorizedRequestInterceptor);
 
   return axiosInstance;
 };

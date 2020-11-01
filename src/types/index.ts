@@ -1,13 +1,11 @@
 type TypedActionReturnType = { type: string; payload?: any };
 
-export function typedAction(
-  type: string,
-  payload?: any
-): TypedActionReturnType {
+export function typedAction(type: string, payload?: any): TypedActionReturnType {
   return { type, payload };
 }
 
 export type Picture = {
+  id?: string;
   copyright: string;
   date: string;
   explanation: string;

@@ -25,7 +25,7 @@
     object-position: center;
     cursor: pointer;
 
-    &:hover ~ .delete {
+    &:hover .delete {
       background: #000;
     }
   }
