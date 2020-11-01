@@ -10,6 +10,7 @@ import RenderErrorMessage from 'components/RenderErrorMessage';
 import FavoritePictures from 'components/FavoritePictures';
 import Portal from 'components/Portal';
 import Popup from 'components/Popup';
+import Loader from 'components/Loader';
 
 // utils
 import { formatDate, nextDay, previousDay } from 'utilities';
@@ -181,9 +182,7 @@ const Apod: React.FC<Props> = ({ getPictureOfTheDay, picture, isLoading }) => {
         </Portal>
       )}
       {isLoading ? (
-        <div className="loader">
-          <h1>Loading................</h1>
-        </div>
+        <Loader />
       ) : (
         <>
           {!pictureOfTheDay?.title && !isLoading ? (
