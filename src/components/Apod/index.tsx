@@ -72,7 +72,7 @@ export const Apod: React.FC<Props> = ({
   const initialDateValue = localStorage.getItem('pictureOfTheDay');
 
   const [dateValue, setDateValue] = useState(
-    initialDateValue ? JSON.parse(initialDateValue).date : new Date()
+    initialDateValue ? JSON.parse(initialDateValue).date : formatDate(new Date())
   );
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favorites') || '[]'));
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
