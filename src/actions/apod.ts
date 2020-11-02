@@ -21,7 +21,6 @@ export const getPreviousOrNextPicture = (date: string) => async (dispatch: Dispa
   try {
     const res = await apodService.getPictureOfTheDay(date);
     dispatch(typedAction(types.GET_PREVIOUS_OR_NEXT_DAY_PICTURE_SUCCESS, res.data));
-    return res.data;
   } catch (error) {
     dispatch(typedAction(types.GET_PREVIOUS_OR_NEXT_DAY_PICTURE_FAILURE, error.response.data));
   }

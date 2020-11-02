@@ -1,3 +1,5 @@
+@import '../../assets/styles/colors';
+
 .favorites-container {
   .favorites-header {
     display: flex;
@@ -6,13 +8,13 @@
   }
 
   .delete-all {
-    min-width: 100px;
+    min-width: 150px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 10px;
-    background: #ec5858;
-    color: #fff;
+    background: $cardinal;
+    color: $white;
     border: none;
     border-radius: 5px;
     font-size: 14px;
@@ -21,6 +23,7 @@
 
     &:hover {
       opacity: 0.75;
+      transition: opacity 0.5s ease-in;
     }
   }
 
@@ -28,6 +31,7 @@
     width: 100%;
     display: flex;
     flex-wrap: nowrap;
+    overflow: auto;
 
     .favorite-image__wrapper {
       background: none;
@@ -57,15 +61,40 @@
     }
 
     .delete {
-      background: red;
+      background: $white;
       opacity: 1;
       animation: fadeIn 2s;
-      color: #fff;
       border: none;
       position: absolute;
       top: 0;
       right: 0;
       font-size: 12px;
+      border-radius: 0 0 0 4px;
+      padding: 4px;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.75;
+        transition: opacity 0.5s ease-in;
+      }
+    }
+  }
+}
+
+$breakpoint-tablet: 768px;
+@media (max-width: $breakpoint-tablet) {
+  .favorites-container {
+    width: 90%;
+    margin: 0 auto;
+
+    .favorites-header {
+      h3 {
+        font-size: 14px;
+      }
+    }
+
+    .favorites {
+      margin-top: 20px;
     }
   }
 }

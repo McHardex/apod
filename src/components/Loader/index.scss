@@ -22,5 +22,16 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    overflow: hidden;
+  }
+}
+
+$breakpoint-tablet: 768px;
+@media (max-width: $breakpoint-tablet) {
+  .loader {
+    .description {
+      width: 95%;
+      margin: 0 auto;
+    }
   }
 }

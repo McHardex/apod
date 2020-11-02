@@ -4,28 +4,27 @@ import { RootState } from 'reducers';
 import { Picture } from 'types';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
+import './index.scss';
 
-// components
+// Components
 import RenderErrorMessage from 'components/RenderErrorMessage';
 import FavoritePictures from 'components/FavoritePictures';
 import Portal from 'components/Portal';
 import Popup from 'components/Popup';
 import Loader from 'components/Loader';
 
-// utils
+// Utils
 import { formatDate, nextDay, previousDay } from 'utilities';
 
-// actions
+// Actions
 import { getPictureOfTheDay } from 'actions/apod';
 
-// services
+// Services
 import firebaseService from 'services/firebaseService';
 
-import './index.scss';
-
-// images
-import { ReactComponent as LeftChevron } from 'images/left-chevron.svg';
-import { ReactComponent as RightChevron } from 'images/right-chevron.svg';
+// Images
+import { ReactComponent as LeftChevron } from 'assets/images/left-chevron.svg';
+import { ReactComponent as RightChevron } from 'assets/images/right-chevron.svg';
 
 const mapStateToProps = (state: RootState) => ({
   picture: state.pictures.pictureOfTheDay.picture,
@@ -71,11 +70,12 @@ export const Apod: React.FC<Props> = ({
   isLoading
 }) => {
   const initialDateValue = localStorage.getItem('pictureOfTheDay');
-  const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
+
   const [dateValue, setDateValue] = useState(
     initialDateValue ? JSON.parse(initialDateValue).date : new Date()
   );
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favorites') || '[]'));
+  const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
 
   const getFavoritePictures = async () => {
     const favPicturesFromFirebase = await Promise.all([firebaseService.get()]);
@@ -92,7 +92,6 @@ export const Apod: React.FC<Props> = ({
       const currentDate = formatDate(new Date());
       setDateValue(currentDate);
       getPictureOfTheDay(currentDate);
-      console.log('got here on mount');
     }
     getFavoritePictures();
   }, []);
@@ -105,7 +104,7 @@ export const Apod: React.FC<Props> = ({
     getUpdatedPictureOfTheDay();
   }, [dateValue]);
 
-  // handle date change
+  // Handle date change
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setDateValue(e.target.value);
   };
@@ -132,19 +131,19 @@ export const Apod: React.FC<Props> = ({
     }
   };
 
-  // preview favorite picture of the day
+  // Preview favorite picture of the day
   const previewFavoritePicture = (date: string) => {
     const selectedFavorite = favorites.find((favorite: Picture) => favorite.date === date);
     setDateValue(selectedFavorite.date);
   };
 
-  // Previous date button
+  // Get previous picture of the day
   const handlePreviousDay = () => {
     const prevDate = previousDay(dateValue);
     setDateValue(prevDate);
   };
 
-  // Next date button
+  // Get Next picture of the day
   const handleNextDay = () => {
     const nextDate = nextDay(dateValue);
     setDateValue(nextDate);
@@ -177,6 +176,7 @@ export const Apod: React.FC<Props> = ({
       .catch((e) => console.log(e));
   };
 
+  // Handle Load picture of the day on hover
   const handleMouseEnter = (e: React.MouseEvent<HTMLButtonElement>) => {
     const el = e.currentTarget as HTMLButtonElement;
     const dataValue = el.getAttribute('data-id');
@@ -186,8 +186,8 @@ export const Apod: React.FC<Props> = ({
     });
   };
 
+  // Reset hover state
   const handleMouseLeave = () => {
-    // reset hover state
     setHoverValues({
       id: '',
       date: ''
@@ -201,13 +201,14 @@ export const Apod: React.FC<Props> = ({
       </div>
     );
 
-  if (!picture.title)
+  if (!picture.title && !isLoading)
     return (
       <div className="app-container">
         <RenderErrorMessage
           prevDay={handlePreviousDay}
           nextDay={handleNextDay}
           errorMessage={picture.msg!}
+          date={dateValue}
         />
       </div>
     );
@@ -220,11 +221,10 @@ export const Apod: React.FC<Props> = ({
         </Portal>
       )}
       <div className="picture-container">
-        <h1>{picture.title}</h1>
+        <h1 className="title">{picture.title}</h1>
+
         <div className="gallery-container">
-          {/* previous day */}
           <button
-            role="button"
             className="back-btn"
             id="previous-picture"
             data-testid="previous-picture"
@@ -237,8 +237,6 @@ export const Apod: React.FC<Props> = ({
           </button>
           {picture.media_type === 'video' ? (
             <video controls autoPlay loop muted preload="auto">
-              <source src={picture.url} type="video/mp4" />
-              <source src={picture.url} type="video/webm" />
               <p>
                 Your browser doesn't support HTML5 video. Here is a&nbsp;
                 <a href={picture.url}>link to the video</a>&nbsp; instead.
@@ -248,9 +246,7 @@ export const Apod: React.FC<Props> = ({
             <img src={picture.url} alt={picture.title} />
           )}
 
-          {/* next day */}
           <button
-            role="button"
             className="next-btn"
             id="next-picture"
             data-id={nextDay(dateValue)}
@@ -260,11 +256,11 @@ export const Apod: React.FC<Props> = ({
           >
             <RightChevron width="20px" />
           </button>
-          {/* end */}
         </div>
+
         <div className="buttons">
           <button className="custom-btn" onClick={addFavorite}>
-            Set favourite
+            Set favorite
           </button>
           <input
             type="date"

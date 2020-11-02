@@ -1,6 +1,7 @@
 import React from 'react';
 import { Picture } from 'types';
-import { ReactComponent as DeleteBtn } from 'images/dustbin.svg';
+import { ReactComponent as DeleteSingleIcon } from 'assets/images/rubbish.svg';
+import { ReactComponent as DeleteAllIcon } from 'assets/images/dustbin.svg';
 import './index.scss';
 
 type Props = {
@@ -22,7 +23,7 @@ const FavoritePictures: React.FC<Props> = ({
         <h3>Favorite Picture(s) of the Day</h3>
         <button onClick={deleteAllFavorites} className="delete-all">
           Clear Favorites
-          <DeleteBtn width="20px" height="20px" fill="#fff" stroke="#fff" />
+          <DeleteAllIcon width="20px" height="20px" fill="#fff" stroke="#fff" />
         </button>
       </div>
       <div className="favorites">
@@ -35,7 +36,7 @@ const FavoritePictures: React.FC<Props> = ({
           >
             <img className="thumbnail" src={favorite.url} alt={favorite.title} />
             <button className="delete" onClick={(e) => deleteSingleFavorite(e, favorite.id!)}>
-              Delete
+              <DeleteSingleIcon width="20px" height="20px" fill="#d11a2a" stroke="#d11a2a" />
             </button>
             <img src={favorite.url} alt={favorite.title} className="large-img" />
           </div>

@@ -2,10 +2,12 @@ import React from 'react';
 
 // Components
 import APOD from 'components/Apod';
+import Header from 'components/Header';
 
-const App: React.FunctionComponent<unknown> = () => {
+const App = () => {
   return (
     <div className="App">
+      <Header />
       <APOD />
     </div>
   );
