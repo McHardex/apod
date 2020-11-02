@@ -3,16 +3,17 @@ import { ReactComponent as NoPicture } from 'assets/images/void.svg';
 import './index.scss';
 
 type Props = {
+  prevDay: () => void;
   rescueMe: () => void;
   errorMessage: string;
 };
 
-const RenderErrorMessage: React.FC<Props> = ({ rescueMe, errorMessage }) => {
+const RenderErrorMessage: React.FC<Props> = ({ rescueMe, errorMessage, prevDay, date }) => {
   return (
     <div className="error">
       <h1 className="error-message">{errorMessage}</h1>
       <NoPicture width="100%" height="80%" />
-      <button onClick={rescueMe}>Rescue me</button>
+      <button onClick={formatDate(new Date()) === date ? prevDay : rescueMe}>Rescue me</button>
     </div>
   );
 };
