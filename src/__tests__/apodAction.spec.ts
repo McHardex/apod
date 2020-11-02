@@ -35,7 +35,7 @@ describe('APOD actions', () => {
     });
   });
 
-  it('should store picture of the day in the localstorage after fetching pictures data successfully', async () => {
+  it('should store picture of the day object into the localstorage', async () => {
     const store = mockStore();
     apodService.getPictureOfTheDay.mockImplementation(resolvedApiResponse);
     await store.dispatch(getPictureOfTheDay('2020-06-06'));

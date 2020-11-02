@@ -3,6 +3,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { Picture } from 'types';
 import { RootState } from 'reducers';
 import { connect } from 'react-redux';
+import CircleLoader from 'react-spinners/CircleLoader';
 import './index.scss';
 
 // actions
@@ -34,9 +35,17 @@ const Popup: React.FC<Props> = ({ getPreviousOrNextPicture, picture, isLoading, 
     getPreviousOrNextPicture(date);
   }, []);
   return (
-    <div className="image-popup">
-      {isLoading ? <span className="image-loading">loading</span> : <img src={picture.url} />}
-    </div>
+    <>
+      {isLoading ? (
+        <div className="image-loading">
+          <CircleLoader size={20} />
+        </div>
+      ) : (
+        <div className="image-popup">
+          <img src={picture.url} alt={picture.title} />
+        </div>
+      )}
+    </>
   );
 };
 

@@ -19,11 +19,7 @@ const http = () => {
 
   const unauthorizedRequestInterceptor = async (error: Error) => {
     if (error.message === 'Network Error') {
-      console.log('Network error \n\n\n'); // eslint-disable-line no-console
-    }
-
-    if (error.response.status === 401) {
-      console.log('UnauthorizedRequestInterceptor \n\n\n'); // eslint-disable-line no-console
+      console.log('Network error'); // eslint-disable-line no-console
     }
 
     return Promise.reject(error);

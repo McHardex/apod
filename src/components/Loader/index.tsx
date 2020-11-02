@@ -8,10 +8,12 @@ const Loader = () => {
       <Skeleton height={`5%`} width={`50%`} className="header" />
       <Skeleton height={`65%`} width={`80%`} className="content" />
       <div className="loader-btn">
-        <Skeleton height={`50px`} width={`200px`} />
-        <Skeleton height={`50px`} width={`200px`} />
+        <Skeleton height={`50px`} width={`150px`} />
+        <Skeleton height={`50px`} width={`150px`} />
       </div>
-      <Skeleton height={`2%`} width={`100%`} count={6} className="explanation" />
+      <div className="description">
+        <Skeleton height={`2%`} width={`100%`} count={6} className="explanation" />
+      </div>
     </div>
   );
 };

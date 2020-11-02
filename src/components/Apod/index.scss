@@ -1,3 +1,5 @@
+@import '../../assets/styles/colors';
+
 .app-container {
   width: 70%;
   margin: 0 auto;
@@ -6,39 +8,13 @@
   position: relative;
   box-sizing: border-box;
 
-  // .loader {
-  //   height: 100%;
-  //   padding-top: 5%;
-  //   box-sizing: border-box;
-
-  //   .header {
-  //     margin: 0 auto;
-  //     display: flex;
-  //     justify-content: space-between;
-  //   }
-
-  //   .content {
-  //     margin: 3% auto;
-  //     display: flex;
-  //     width: 90%;
-  //     justify-content: center;
-  //   }
-
-  //   .loader-btn {
-  //     width: 75%;
-  //     margin: 0 auto;
-  //     display: flex;
-  //     justify-content: space-between;
-  //     margin-bottom: 20px;
-  //   }
-  // }
-
   .picture-container {
     padding-top: 50px;
     box-sizing: border-box;
+    animation: slideIn 0.5s;
   }
 
-  h1 {
+  .title {
     text-align: center;
     margin: 0;
   }
@@ -60,12 +36,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: transparent;
+      background: $white;
       border-radius: 50%;
       border: 1px solid;
       padding: 0;
       height: 50px;
       width: 50px;
+
+      .image-loading {
+        position: absolute;
+        bottom: 45px;
+      }
 
       .image-popup {
         position: absolute;
@@ -73,8 +54,8 @@
         left: 0;
         bottom: 50px;
         height: 250px;
-        animation: popup 0.5s forwards;
         box-sizing: border-box;
+        animation: popup 0.5s forwards;
 
         img {
           width: 100%;
@@ -116,14 +97,21 @@
   }
 
   .custom-btn {
-    background: #f01085;
-    color: #fff;
+    font-family: 'Raleway', sans-serif;
+    background: $green;
+    color: $white;
     padding: 10px 20px;
-    border: 1px solid #fff;
+    border: 1px solid $white;
     outline: none;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
+  }
+
+  .description {
+    animation: slideInX 1s;
+    font-size: 18px;
+    line-height: 30px;
   }
 }
 
@@ -135,5 +123,56 @@
   to {
     opacity: 1;
     transform: scale(1);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInX {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+$breakpoint-tablet: 768px;
+@media (max-width: $breakpoint-tablet) {
+  .app-container {
+    width: 100%;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    .gallery-container {
+      height: 440px;
+    }
+
+    .custom-btn {
+      width: 130px;
+      height: 40px;
+      padding: 0 10px;
+      font-size: 14px;
+    }
+
+    .description {
+      width: 90%;
+      margin: 0 auto;
+      text-align: justify;
+      word-break: break-word;
+    }
   }
 }
