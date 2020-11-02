@@ -194,7 +194,7 @@ export const Apod: React.FC<Props> = ({
     });
   };
 
-  const rescueMe = () => {
+  const rescueUser = () => {
     setDateValue(process.env.REACT_APP_RESCUE_USER_DATE);
   };
 
@@ -210,9 +210,9 @@ export const Apod: React.FC<Props> = ({
       <div className="app-container">
         <RenderErrorMessage
           prevDay={handlePreviousDay}
-          rescueMe={rescueMe}
+          rescueUser={rescueUser}
           errorMessage={picture.msg!}
-          // date={dateValue}
+          date={dateValue}
         />
       </div>
     );
