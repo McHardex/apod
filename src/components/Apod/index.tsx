@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { RootState } from 'reducers';
 import { Picture } from 'types';
 import { connect } from 'react-redux';
@@ -69,6 +69,7 @@ export const Apod: React.FC<Props> = ({
   picture = defaultPicture,
   isLoading
 }) => {
+  const favoritesRef = useRef<HTMLDivElement>(null);
   const initialDateValue = localStorage.getItem('pictureOfTheDay');
 
   const [dateValue, setDateValue] = useState(
@@ -128,6 +129,12 @@ export const Apod: React.FC<Props> = ({
         .catch((e) => {
           console.log(e);
         });
+    }
+
+    if (favoritesRef.current) {
+      favoritesRef.current.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
 
@@ -279,14 +286,16 @@ export const Apod: React.FC<Props> = ({
           <p>{picture.explanation}</p>
         </div>
       </div>
-      {favorites.length > 0 && (
-        <FavoritePictures
-          favorites={favorites}
-          deleteSingleFavorite={deleteSingleFavorite}
-          deleteAllFavorites={deleteAllFavorites}
-          previewFavoritePicture={previewFavoritePicture}
-        />
-      )}
+      <div ref={favoritesRef}>
+        {favorites.length > 0 && (
+          <FavoritePictures
+            favorites={favorites}
+            deleteSingleFavorite={deleteSingleFavorite}
+            deleteAllFavorites={deleteAllFavorites}
+            previewFavoritePicture={previewFavoritePicture}
+          />
+        )}
+      </div>
     </div>
   );
 };
