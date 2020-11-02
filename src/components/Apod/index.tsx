@@ -194,6 +194,10 @@ export const Apod: React.FC<Props> = ({
     });
   };
 
+  const rescueMe = () => {
+    setDateValue('1995-06-16');
+  };
+
   if (isLoading)
     return (
       <div className="app-container">
@@ -205,10 +209,10 @@ export const Apod: React.FC<Props> = ({
     return (
       <div className="app-container">
         <RenderErrorMessage
-          prevDay={handlePreviousDay}
-          nextDay={handleNextDay}
+          rescueMe={rescueMe}
+          // nextDay={handleNextDay}
           errorMessage={picture.msg!}
-          date={dateValue}
+          // date={dateValue}
         />
       </div>
     );
