@@ -1,47 +1,49 @@
-# APOD
-NASA's Astronomy Picture of the Day (APOD)
+## Project Name & Pitch
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+APOD
 
-## Available Scripts
+An application used to preview Nasa's Astronomy picture of the day based on the selected date, built with React, Redux, Firebase, Typescript and SCSS.
 
-In the project directory, you can run:
+## Project Features
 
-### `yarn start`
+- User can get picture of the day based on the selected date.
+- User can add picture of the day to favorite list
+- User can delete a favorite picture of the day from the favorite list
+- User can delete all favorite pictures of the day.
+- User can preview favorited picture of the day
+- User can hover on the previous an next button to have a sneak peak of the previous/next picture of the day.
+- User can access their favorited list on different devices.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Installation and Setup Instructions
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Clone down this repository. You will need `node` and `npm/yarn` installed globally on your machine. You will also need to create a firebase account to get your configuration keys.
 
-### `yarn test`
+Installation:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+`yarn install`
 
-### `yarn build`
+Update an .env file and update:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+`Use .env.example file as a guide`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+To Run Test Suite:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+`npm test`
 
-### `yarn eject`
+To Start Server:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+`yarn start`
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+To Visit App:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+`localhost:3000`
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Reflection
 
-## Learn More
+This was a 3 day project built as an assessment for PartnerHero. Project goals included using technologies such as firebase to persist favorited pictures of the day.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+I started this process by using the `create-react-app` boilerplate with `typescript`, then adding `redux` and `firebase`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Deployment
+
+This application is deployed with `Netlify` and it is live [here](https://apod-mc.netlify.app/)
