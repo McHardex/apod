@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/b1a487ca-90ad-4ba8-acb1-97663eefa574/deploy-status)](https://app.netlify.com/sites/apod-mc/deploys)
+
 ## Project Name & Pitch
 
 APOD
