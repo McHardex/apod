@@ -97,11 +97,11 @@ export const Apod: React.FC<Props> = ({
     getFavoritePictures();
   }, []);
 
-  const getUpdatedPictureOfTheDay = async () => {
-    getPictureOfTheDay(dateValue || formatDate(new Date()));
-  };
-
   useEffect(() => {
+    const getUpdatedPictureOfTheDay = async () => {
+      getPictureOfTheDay(dateValue || formatDate(new Date()));
+    };
+
     getUpdatedPictureOfTheDay();
   }, [dateValue]);
 
@@ -113,10 +113,10 @@ export const Apod: React.FC<Props> = ({
   // Add picture of the day to favorites
   const addFavorite = () => {
     const storedFavourites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    const checkDiplicate = storedFavourites.some(
+    const checkDuplicate = storedFavourites.some(
       (favorite: Picture) => favorite.date === picture.date
     );
-    if (!checkDiplicate) {
+    if (!checkDuplicate) {
       storedFavourites.push(picture);
       localStorage.setItem('favorites', JSON.stringify(storedFavourites));
       setFavorites([...favorites, picture]);
@@ -260,6 +260,7 @@ export const Apod: React.FC<Props> = ({
           <button
             className="next-btn"
             id="next-picture"
+            data-testid="next-picture"
             data-id={nextDay(dateValue)}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}

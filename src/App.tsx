@@ -4,7 +4,7 @@ import React from 'react';
 import APOD from 'components/Apod';
 import Header from 'components/Header';
 
-const App = () => {
+export const App = () => {
   return (
     <div className="App">
       <Header />

@@ -4,7 +4,7 @@ import './index.scss';
 
 const Loader = () => {
   return (
-    <div className="loader">
+    <div className="loader" data-testid="loader">
       <Skeleton height={`5%`} width={`50%`} className="header" />
       <Skeleton height={`65%`} width={`80%`} className="content" />
       <div className="loader-btn">
