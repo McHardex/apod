@@ -4,6 +4,16 @@ import { picture } from 'mocks';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { formatDate } from 'utilities';
 
+jest.mock('services/firebaseService', () => ({
+  __esModule: true,
+  default: {
+    get: () => Promise.resolve([]),
+    create: () => Promise.resolve({}),
+    delete: () => Promise.resolve(undefined),
+    deleteCollection: () => Promise.resolve(undefined)
+  }
+}));
+
 const props = {
   getPictureOfTheDay: jest.fn(),
   picture: picture,
@@ -22,7 +32,7 @@ describe('Apod', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
   test('render loading component when fetching data', async () => {
@@ -44,6 +54,20 @@ describe('Apod', () => {
     expect(img).toHaveAttribute('src', picture.url);
     expect(nextBtn).toBeInTheDocument();
     expect(pictureDescriptionWrapper).toBeInTheDocument();
+  });
+
+  test('renders video with src when media type is video', () => {
+    const videoPicture = {
+      ...picture,
+      media_type: 'video',
+      url: 'https://example.com/apod-video.mp4'
+    };
+
+    const { container } = render(<Apod {...props} picture={videoPicture} />);
+    const video = container.querySelector('video');
+
+    expect(video).toBeInTheDocument();
+    expect(video).toHaveAttribute('src', videoPicture.url);
   });
 
   test('call getPictureOfTheDay when the user clicks the back button', async () => {

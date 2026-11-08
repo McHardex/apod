@@ -79,9 +79,10 @@ export const Apod: React.FC<Props> = ({
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
 
   const getFavoritePictures = async () => {
-    const favPicturesFromFirebase = await Promise.all([firebaseService.get()]);
-    setFavorites(favPicturesFromFirebase[0]);
-    localStorage.setItem('favorites', JSON.stringify(favPicturesFromFirebase[0]));
+    const favPicturesFromFirebase = await firebaseService.get();
+    const nextFavorites = favPicturesFromFirebase || [];
+    setFavorites(nextFavorites);
+    localStorage.setItem('favorites', JSON.stringify(nextFavorites));
   };
 
   useEffect(() => {
@@ -247,7 +248,7 @@ export const Apod: React.FC<Props> = ({
             <LeftChevron width="20px" />
           </button>
           {picture.media_type === 'video' ? (
-            <video controls autoPlay loop muted preload="auto">
+            <video controls autoPlay loop muted preload="auto" src={picture.url}>
               <p>
                 Your browser doesn't support HTML5 video. Here is a&nbsp;
                 <a href={picture.url}>link to the video</a>&nbsp; instead.
