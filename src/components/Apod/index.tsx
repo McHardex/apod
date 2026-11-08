@@ -14,7 +14,7 @@ import Popup from 'components/Popup';
 import Loader from 'components/Loader';
 
 // Utils
-import { formatDate, nextDay, previousDay } from 'utilities';
+import { formatDate, nextDay, parseStoredJson, previousDay } from 'utilities';
 
 // Actions
 import { getPictureOfTheDay } from 'actions/apod';
@@ -70,22 +70,25 @@ export const Apod: React.FC<Props> = ({
   isLoading
 }) => {
   const favoritesRef = useRef<HTMLDivElement>(null);
-  const initialDateValue = localStorage.getItem('pictureOfTheDay');
+  const cachedPicture = parseStoredJson<{ date?: string }>('pictureOfTheDay', {});
 
   const [dateValue, setDateValue] = useState(
-    initialDateValue ? JSON.parse(initialDateValue).date : formatDate(new Date())
+    cachedPicture.date ? cachedPicture.date : formatDate(new Date())
   );
-  const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favorites') || '[]'));
+  const [favorites, setFavorites] = useState(parseStoredJson<Picture[]>('favorites', []));
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
 
   const getFavoritePictures = async () => {
     const favPicturesFromFirebase = await Promise.all([firebaseService.get()]);
-    setFavorites(favPicturesFromFirebase[0]);
+    setFavorites(favPicturesFromFirebase[0] ?? []);
     localStorage.setItem('favorites', JSON.stringify(favPicturesFromFirebase[0]));
   };
 
   useEffect(() => {
-    const storedPictureOfTheDay = JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}');
+    const storedPictureOfTheDay = parseStoredJson<{ date?: string; url?: string }>(
+      'pictureOfTheDay',
+      {}
+    );
 
     if (storedPictureOfTheDay.url) {
       setDateValue(storedPictureOfTheDay.date);
@@ -112,7 +115,7 @@ export const Apod: React.FC<Props> = ({
 
   // Add picture of the day to favorites
   const addFavorite = () => {
-    const storedFavourites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const storedFavourites = parseStoredJson<Picture[]>('favorites', []);
     const checkDuplicate = storedFavourites.some(
       (favorite: Picture) => favorite.date === picture.date
     );
@@ -247,7 +250,7 @@ export const Apod: React.FC<Props> = ({
             <LeftChevron width="20px" />
           </button>
           {picture.media_type === 'video' ? (
-            <video controls autoPlay loop muted preload="auto">
+            <video controls autoPlay loop muted preload="auto" src={picture.url}>
               <p>
                 Your browser doesn't support HTML5 video. Here is a&nbsp;
                 <a href={picture.url}>link to the video</a>&nbsp; instead.

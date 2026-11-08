@@ -1,3 +1,13 @@
+jest.mock('services/firebaseService', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(() => Promise.resolve([])),
+    create: jest.fn(() => Promise.resolve()),
+    delete: jest.fn(() => Promise.resolve()),
+    deleteCollection: jest.fn(() => Promise.resolve())
+  }
+}));
+
 import React from 'react';
 import { Apod } from 'components/Apod';
 import { picture } from 'mocks';
@@ -22,7 +32,7 @@ describe('Apod', () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
   test('render loading component when fetching data', async () => {
