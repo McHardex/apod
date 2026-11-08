@@ -79,30 +79,23 @@ export const Apod: React.FC<Props> = ({
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
 
   const getFavoritePictures = async () => {
-    const favPicturesFromFirebase = await Promise.all([firebaseService.get()]);
-    setFavorites(favPicturesFromFirebase[0]);
-    localStorage.setItem('favorites', JSON.stringify(favPicturesFromFirebase[0]));
+    try {
+      const favPicturesFromFirebase = await firebaseService.get();
+      const nextFavorites = Array.isArray(favPicturesFromFirebase) ? favPicturesFromFirebase : [];
+      setFavorites(nextFavorites);
+      localStorage.setItem('favorites', JSON.stringify(nextFavorites));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   useEffect(() => {
-    const storedPictureOfTheDay = JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}');
-
-    if (storedPictureOfTheDay.url) {
-      setDateValue(storedPictureOfTheDay.date);
-    } else {
-      const currentDate = formatDate(new Date());
-      setDateValue(currentDate);
-      getPictureOfTheDay(currentDate);
-    }
     getFavoritePictures();
   }, []);
 
   useEffect(() => {
-    const getUpdatedPictureOfTheDay = async () => {
-      getPictureOfTheDay(dateValue || formatDate(new Date()));
-    };
-
-    getUpdatedPictureOfTheDay();
+    getPictureOfTheDay(dateValue || formatDate(new Date()));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetch when the selected date changes
   }, [dateValue]);
 
   // Handle date change
@@ -208,7 +201,7 @@ export const Apod: React.FC<Props> = ({
   if (isLoading)
     return (
       <div className="app-container">
-        <Loader />;
+        <Loader />
       </div>
     );
 

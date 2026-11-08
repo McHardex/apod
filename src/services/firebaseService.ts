@@ -1,12 +1,12 @@
-import firestore from 'firebaseSetup';
+import getFirestore from 'firebaseSetup';
 import { Picture } from 'types';
 
-const db = firestore.collection('favoritePictures');
+const favoritesCollection = () => getFirestore().collection('favoritePictures');
 
 const firebaseService = {
   async get() {
     const favoritePictures: Picture[] = [];
-    const snapshot = await db.get();
+    const snapshot = await favoritesCollection().get();
     snapshot.forEach((doc) => {
       const data = doc.data() as Picture;
       favoritePictures.push({ ...data, id: doc.id });
@@ -15,16 +15,17 @@ const firebaseService = {
   },
 
   create(picture: Picture) {
-    return db.add(picture);
+    return favoritesCollection().add(picture);
   },
 
   async delete(id: string) {
-    return await db.doc(id).delete();
+    return await favoritesCollection().doc(id).delete();
   },
 
   async deleteCollection() {
+    const firestore = getFirestore();
     const batch = firestore.batch();
-    const snapshot = await db.get();
+    const snapshot = await favoritesCollection().get();
     snapshot.forEach((doc) => {
       batch.delete(doc.ref);
     });
