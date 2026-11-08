@@ -4,6 +4,16 @@ import { picture } from 'mocks';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { formatDate } from 'utilities';
 
+jest.mock('services/firebaseService', () => ({
+  __esModule: true,
+  default: {
+    get: jest.fn(() => Promise.resolve([])),
+    create: jest.fn(() => Promise.resolve()),
+    delete: jest.fn(() => Promise.resolve()),
+    deleteCollection: jest.fn(() => Promise.resolve())
+  }
+}));
+
 const props = {
   getPictureOfTheDay: jest.fn(),
   picture: picture,

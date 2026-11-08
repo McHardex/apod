@@ -79,9 +79,14 @@ export const Apod: React.FC<Props> = ({
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
 
   const getFavoritePictures = async () => {
-    const favPicturesFromFirebase = await Promise.all([firebaseService.get()]);
-    setFavorites(favPicturesFromFirebase[0]);
-    localStorage.setItem('favorites', JSON.stringify(favPicturesFromFirebase[0]));
+    try {
+      const favoritePictures = await firebaseService.get();
+      const nextFavorites = Array.isArray(favoritePictures) ? favoritePictures : [];
+      setFavorites(nextFavorites);
+      localStorage.setItem('favorites', JSON.stringify(nextFavorites));
+    } catch {
+      // Keep showing favorites already in local state when Firebase is unavailable.
+    }
   };
 
   useEffect(() => {
