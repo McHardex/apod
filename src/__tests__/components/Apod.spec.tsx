@@ -1,8 +1,9 @@
 import React from 'react';
 import { Apod } from 'components/Apod';
 import { picture } from 'mocks';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { formatDate } from 'utilities';
+import firebaseService from 'services/firebaseService';
 
 jest.mock('services/firebaseService', () => ({
   __esModule: true,
@@ -18,6 +19,13 @@ const props = {
   getPictureOfTheDay: jest.fn(),
   picture: picture,
   isLoading: false
+};
+
+const renderApod = async (overrideProps: Partial<typeof props> = {}) => {
+  render(<Apod {...props} {...overrideProps} />);
+  await waitFor(() => {
+    expect(firebaseService.get).toHaveBeenCalled();
+  });
 };
 
 describe('Apod', () => {
@@ -36,13 +44,13 @@ describe('Apod', () => {
   });
 
   test('render loading component when fetching data', async () => {
-    render(<Apod {...props} isLoading={true} />);
+    await renderApod({ isLoading: true });
     const loader = screen.getByTestId('loader');
     expect(loader).toBeInTheDocument();
   });
 
   test('renders picture details successfullty fetching the picture data', async () => {
-    render(<Apod {...props} />);
+    await renderApod();
     const title = await screen.getByText(/The Ghoul of IC 2118/);
     const backBtn = await screen.findByTestId('previous-picture');
     const img = await screen.getByRole('img');
@@ -57,14 +65,14 @@ describe('Apod', () => {
   });
 
   test('call getPictureOfTheDay when the user clicks the back button', async () => {
-    render(<Apod {...props} />);
+    await renderApod();
     const backBtn = await screen.findByTestId('previous-picture');
     fireEvent.click(backBtn);
     expect(props.getPictureOfTheDay).toBeCalled();
   });
 
   test('call getPictureOfTheDay when  user changes the date input value', async () => {
-    render(<Apod {...props} />);
+    await renderApod();
     const input = await screen.getByDisplayValue(formatDate(new Date()));
 
     await fireEvent.change(input, { target: { value: '2020-01-01' } });
@@ -72,7 +80,7 @@ describe('Apod', () => {
   });
 
   test('render error component when there is no picture of the day', async () => {
-    render(<Apod {...props} picture={{ msg: 'no picture of the day' }} />);
+    await renderApod({ picture: { msg: 'no picture of the day' } });
     const errorMessage = await screen.getByText('no picture of the day');
     const rescueMeBtn = await screen.getByRole('button');
     expect(errorMessage).toBeInTheDocument();
