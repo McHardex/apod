@@ -85,7 +85,8 @@ export const Apod: React.FC<Props> = ({
       setFavorites(nextFavorites);
       localStorage.setItem('favorites', JSON.stringify(nextFavorites));
     } catch {
-      // Keep showing favorites already in local state when Firebase is unavailable.
+      const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+      setFavorites(Array.isArray(storedFavorites) ? storedFavorites : []);
     }
   };
 

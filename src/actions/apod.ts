@@ -1,5 +1,5 @@
 import { Dispatch, AnyAction } from 'redux';
-import { typedAction } from 'types';
+import { Picture, typedAction } from 'types';
 import * as types from 'actionTypes';
 import apodService from 'services/apod';
 import { getApodRequestErrorPayload } from 'utilities/apodError';
@@ -10,7 +10,7 @@ type ApodFetchHandlers = {
   onPending: string;
   onSuccess: string;
   onFailure: string;
-  afterSuccess?: (data: unknown) => void;
+  afterSuccess?: (data: Picture) => void;
 };
 
 const fetchApodForDate = (date: string, handlers: ApodFetchHandlers) => async (
