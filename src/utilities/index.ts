@@ -1,6 +1,34 @@
+type ApodErrorPayload = {
+  msg: string;
+};
+
 const formatMonth = (value: number) => {
   const appendZero = value <= 8 ? `0${value + 1}` : value + 1;
   return appendZero;
+};
+
+export const getApodErrorPayload = (error: unknown): ApodErrorPayload => {
+  if (typeof error === 'object' && error !== null) {
+    const maybeAxiosError = error as {
+      response?: { data?: { msg?: string } | string };
+      message?: string;
+    };
+    const responseData = maybeAxiosError.response?.data;
+
+    if (typeof responseData === 'object' && responseData !== null && responseData.msg) {
+      return { msg: responseData.msg };
+    }
+
+    if (typeof responseData === 'string' && responseData.trim()) {
+      return { msg: responseData };
+    }
+
+    if (maybeAxiosError.message) {
+      return { msg: maybeAxiosError.message };
+    }
+  }
+
+  return { msg: 'Unable to fetch astronomy picture of the day.' };
 };
 
 const formatDay = (value: number) => {
