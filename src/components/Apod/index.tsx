@@ -14,7 +14,7 @@ import Popup from 'components/Popup';
 import Loader from 'components/Loader';
 
 // Utils
-import { formatDate, nextDay, previousDay } from 'utilities';
+import { formatDate, nextDay, previousDay, readStoredJson } from 'utilities';
 
 // Actions
 import { getPictureOfTheDay } from 'actions/apod';
@@ -73,10 +73,14 @@ export const Apod: React.FC<Props> = ({
 }) => {
   const favoritesRef = useRef<HTMLDivElement>(null);
   const [dateValue, setDateValue] = useState(() => {
-    const storedPictureOfTheDay = JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}');
-    return storedPictureOfTheDay.url ? storedPictureOfTheDay.date : formatDate(new Date());
+    const storedPictureOfTheDay = readStoredJson<Partial<Picture>>('pictureOfTheDay', {});
+    return storedPictureOfTheDay.url && storedPictureOfTheDay.date
+      ? storedPictureOfTheDay.date
+      : formatDate(new Date());
   });
-  const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favorites') || '[]'));
+  const [favorites, setFavorites] = useState<Picture[]>(() =>
+    readStoredJson<Picture[]>('favorites', [])
+  );
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
 
   const getFavoritePictures = async () => {
@@ -101,7 +105,7 @@ export const Apod: React.FC<Props> = ({
 
   // Add picture of the day to favorites
   const addFavorite = () => {
-    const storedFavourites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const storedFavourites = readStoredJson<Picture[]>('favorites', []);
     const checkDuplicate = storedFavourites.some(
       (favorite: Picture) => favorite.date === picture.date
     );
@@ -129,8 +133,7 @@ export const Apod: React.FC<Props> = ({
 
   // Preview favorite picture of the day
   const previewFavoritePicture = (date: string) => {
-    const selectedFavorite = favorites.find((favorite: Picture) => favorite.date === date);
-    setDateValue(selectedFavorite.date);
+    setDateValue(date);
   };
 
   // Get previous picture of the day

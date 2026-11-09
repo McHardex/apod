@@ -24,3 +24,13 @@ const shiftDate = (date: string, days: number) => {
 export const nextDay = (date: string) => shiftDate(date, 1);
 
 export const previousDay = (date: string) => shiftDate(date, -1);
+
+export const readStoredJson = <T>(key: string, fallback: T): T => {
+  const stored = localStorage.getItem(key);
+  if (!stored) return fallback;
+  try {
+    return JSON.parse(stored);
+  } catch {
+    return fallback;
+  }
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Apod } from 'components/Apod';
 import { picture } from 'mocks';
-import { act, render, screen, fireEvent } from '@testing-library/react';
+import { act, render, RenderResult, screen, fireEvent } from '@testing-library/react';
 import { Picture } from 'types';
 import firebaseService from 'services/firebaseService';
 
@@ -23,9 +23,11 @@ const props = {
 
 // Flushes the favorites fetch that Apod starts on mount.
 const renderApod = async (ui: React.ReactElement) => {
+  let result!: RenderResult;
   await act(async () => {
-    render(ui);
+    result = render(ui);
   });
+  return result;
 };
 
 const TODAY = '2020-10-30';
@@ -94,6 +96,31 @@ describe('Apod', () => {
     await renderApod(<Apod {...props} />);
     expect(props.getPictureOfTheDay).toHaveBeenCalledTimes(1);
     expect(props.getPictureOfTheDay).toHaveBeenCalledWith(picture.date);
+  });
+
+  test.each([
+    ['a cached entry without a url', JSON.stringify({ date: '2020-01-01' })],
+    ['a corrupt cached entry', 'not-json']
+  ])('fetches today on mount when storage has %s', async (_case, stored) => {
+    window.localStorage.getItem = jest.fn((key: string) =>
+      key === 'pictureOfTheDay' ? stored : null
+    );
+    await renderApod(<Apod {...props} />);
+    expect(props.getPictureOfTheDay).toHaveBeenCalledTimes(1);
+    expect(props.getPictureOfTheDay).toHaveBeenCalledWith(TODAY);
+  });
+
+  test('call getPictureOfTheDay when the user clicks the next button', async () => {
+    await renderApod(<Apod {...props} />);
+    fireEvent.click(screen.getByTestId('next-picture'));
+    expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith('2020-10-31');
+  });
+
+  test('previewing a favorite fetches that favorite date', async () => {
+    (firebaseService.get as jest.Mock).mockResolvedValue([picture]);
+    const { container } = await renderApod(<Apod {...props} />);
+    fireEvent.click(container.querySelector('.favorite-image__wrapper') as HTMLElement);
+    expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith(picture.date);
   });
 
   test('call getPictureOfTheDay when the user clicks the back button', async () => {
