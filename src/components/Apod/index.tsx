@@ -277,7 +277,7 @@ export const Apod: React.FC<Props> = ({
           <input
             type="date"
             className="custom-btn"
-            min={formatDate(new Date('1995-06-16'))}
+            min="1995-06-16"
             max={formatDate(new Date())}
             value={dateValue ? dateValue : ''}
             onChange={handleDateChange}

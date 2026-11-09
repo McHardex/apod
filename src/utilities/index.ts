@@ -1,35 +1,26 @@
-const formatMonth = (value: number) => {
-  const appendZero = value <= 8 ? `0${value + 1}` : value + 1;
-  return appendZero;
-};
-
-const formatDay = (value: number) => {
-  const appendZero = value < 10 ? `0${value}` : value;
-  return appendZero;
-};
+const padTwoDigits = (value: number) => (value < 10 ? `0${value}` : `${value}`);
 
 export const formatDate = (date: Date) => {
-  const getFullYear = new Date(date).getFullYear();
-  const getMonth = new Date(date).getMonth();
-  const getDate = new Date(date).getDate();
+  const year = date.getFullYear();
+  const month = padTwoDigits(date.getMonth() + 1);
+  const day = padTwoDigits(date.getDate());
 
-  return `${getFullYear}-${formatMonth(getMonth)}-${formatDay(getDate)}`;
+  return `${year}-${month}-${day}`;
 };
 
-export const nextDay = (date: string) => {
-  const nextDay = new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000);
-  const getFullYear = nextDay.getFullYear();
-  const getMonth = nextDay.getMonth();
-  const getDate = nextDay.getDate();
-
-  return `${getFullYear}-${formatMonth(getMonth)}-${formatDay(getDate)}`;
+// `new Date('YYYY-MM-DD')` parses as UTC midnight, which is the previous calendar
+// day in timezones behind UTC, so the parts are read as a local date instead.
+const parseDate = (date: string) => {
+  const [year, month, day] = date.split('-').map(Number);
+  return new Date(year, month - 1, day);
 };
 
-export const previousDay = (date: string) => {
-  const nextDay = new Date(new Date(date).getTime() - 24 * 60 * 60 * 1000);
-  const getFullYear = nextDay.getFullYear();
-  const getMonth = nextDay.getMonth();
-  const getDate = nextDay.getDate();
-
-  return `${getFullYear}-${formatMonth(getMonth)}-${formatDay(getDate)}`;
+const shiftDate = (date: string, days: number) => {
+  const shifted = parseDate(date);
+  shifted.setDate(shifted.getDate() + days);
+  return formatDate(shifted);
 };
+
+export const nextDay = (date: string) => shiftDate(date, 1);
+
+export const previousDay = (date: string) => shiftDate(date, -1);
