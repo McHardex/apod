@@ -18,7 +18,7 @@
     "axios": "^0.21.0",
     "firebase": "^8.0.0",
     "moment": "^2.29.1",
-    "node-sass": "^4.14.1",
+    "sass": "^1.69.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-image-gallery": "^1.0.8",
@@ -67,5 +67,8 @@
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.1.2",
     "redux-devtools-extension": "^2.13.8"
+  },
+  "jest": {
+    "globalSetup": "<rootDir>/jest.globalSetup.js"
   }
 }

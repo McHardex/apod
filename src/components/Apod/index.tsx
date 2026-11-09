@@ -51,6 +51,8 @@ type HoverValue = {
   date: string;
 };
 
+const FIRST_APOD_DATE = '1995-06-16';
+
 const defaultPicture = {
   id: '',
   msg: '',
@@ -70,11 +72,10 @@ export const Apod: React.FC<Props> = ({
   isLoading
 }) => {
   const favoritesRef = useRef<HTMLDivElement>(null);
-  const initialDateValue = localStorage.getItem('pictureOfTheDay');
-
-  const [dateValue, setDateValue] = useState(
-    initialDateValue ? JSON.parse(initialDateValue).date : formatDate(new Date())
-  );
+  const [dateValue, setDateValue] = useState(() => {
+    const storedPictureOfTheDay = JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}');
+    return storedPictureOfTheDay.url ? storedPictureOfTheDay.date : formatDate(new Date());
+  });
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favorites') || '[]'));
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
 
@@ -85,24 +86,12 @@ export const Apod: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    const storedPictureOfTheDay = JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}');
-
-    if (storedPictureOfTheDay.url) {
-      setDateValue(storedPictureOfTheDay.date);
-    } else {
-      const currentDate = formatDate(new Date());
-      setDateValue(currentDate);
-      getPictureOfTheDay(currentDate);
-    }
     getFavoritePictures();
   }, []);
 
+  // Fetch only via this effect: navigate by calling setDateValue, not getPictureOfTheDay.
   useEffect(() => {
-    const getUpdatedPictureOfTheDay = async () => {
-      getPictureOfTheDay(dateValue || formatDate(new Date()));
-    };
-
-    getUpdatedPictureOfTheDay();
+    getPictureOfTheDay(dateValue || formatDate(new Date()));
   }, [dateValue]);
 
   // Handle date change
@@ -202,7 +191,7 @@ export const Apod: React.FC<Props> = ({
   };
 
   const rescueUser = () => {
-    setDateValue(process.env.REACT_APP_RESCUE_USER_DATE);
+    setDateValue(process.env.REACT_APP_RESCUE_USER_DATE || FIRST_APOD_DATE);
   };
 
   if (isLoading)
@@ -247,7 +236,7 @@ export const Apod: React.FC<Props> = ({
             <LeftChevron width="20px" />
           </button>
           {picture.media_type === 'video' ? (
-            <video controls autoPlay loop muted preload="auto">
+            <video controls autoPlay loop muted preload="auto" src={picture.url}>
               <p>
                 Your browser doesn't support HTML5 video. Here is a&nbsp;
                 <a href={picture.url}>link to the video</a>&nbsp; instead.
@@ -277,7 +266,7 @@ export const Apod: React.FC<Props> = ({
           <input
             type="date"
             className="custom-btn"
-            min={formatDate(new Date('1995-06-16'))}
+            min={FIRST_APOD_DATE}
             max={formatDate(new Date())}
             value={dateValue ? dateValue : ''}
             onChange={handleDateChange}
