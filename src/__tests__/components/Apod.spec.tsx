@@ -30,6 +30,12 @@ const renderApod = async (ui: React.ReactElement) => {
 
 const TODAY = '2020-10-30';
 
+const stubStoredPicture = () => {
+  window.localStorage.getItem = jest.fn((key: string) =>
+    key === 'pictureOfTheDay' ? JSON.stringify(picture) : null
+  );
+};
+
 describe('Apod', () => {
   beforeAll(() => {
     jest.useFakeTimers('modern');
@@ -84,9 +90,7 @@ describe('Apod', () => {
   });
 
   test('fetches the stored picture date on mount when one is cached', async () => {
-    window.localStorage.getItem = jest.fn((key: string) =>
-      key === 'pictureOfTheDay' ? JSON.stringify(picture) : null
-    );
+    stubStoredPicture();
     await renderApod(<Apod {...props} />);
     expect(props.getPictureOfTheDay).toHaveBeenCalledTimes(1);
     expect(props.getPictureOfTheDay).toHaveBeenCalledWith(picture.date);
@@ -119,9 +123,7 @@ describe('Apod', () => {
     const configuredRescueDate = process.env.REACT_APP_RESCUE_USER_DATE;
 
     const clickRescue = async () => {
-      window.localStorage.getItem = jest.fn((key: string) =>
-        key === 'pictureOfTheDay' ? JSON.stringify(picture) : null
-      );
+      stubStoredPicture();
       await renderApod(<Apod {...props} picture={{ msg: 'no picture of the day' } as Picture} />);
       fireEvent.click(screen.getByRole('button', { name: 'Rescue me' }));
     };

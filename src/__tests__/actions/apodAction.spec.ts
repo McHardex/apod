@@ -45,13 +45,12 @@ describe('APOD actions', () => {
   ])('%s failure', (_name, action, pendingType, failureType) => {
     it('dispatches the API error body', async () => {
       const store = mockStore();
-      mockedApodService.getPictureOfTheDay.mockRejectedValue({
-        response: { data: { msg: 'Date must be between Jun 16, 1995 and today.' } }
-      });
+      const apiError = { msg: 'Date must be between Jun 16, 1995 and today.' };
+      mockedApodService.getPictureOfTheDay.mockRejectedValue({ response: { data: apiError } });
       await store.dispatch(action('1990-01-01'));
       expect(store.getActions()).toEqual([
         { type: pendingType, payload: undefined },
-        { type: failureType, payload: { msg: 'Date must be between Jun 16, 1995 and today.' } }
+        { type: failureType, payload: apiError }
       ]);
     });
 
