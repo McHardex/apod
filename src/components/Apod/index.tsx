@@ -106,9 +106,7 @@ export const Apod: React.FC<Props> = ({
   // Add picture of the day to favorites
   const addFavorite = () => {
     const storedFavourites = readStoredJson<Picture[]>('favorites', []);
-    const checkDuplicate = storedFavourites.some(
-      (favorite: Picture) => favorite.date === picture.date
-    );
+    const checkDuplicate = storedFavourites.some((favorite) => favorite.date === picture.date);
     if (!checkDuplicate) {
       storedFavourites.push(picture);
       localStorage.setItem('favorites', JSON.stringify(storedFavourites));

@@ -32,9 +32,9 @@ const renderApod = async (ui: React.ReactElement) => {
 
 const TODAY = '2020-10-30';
 
-const stubStoredPicture = () => {
+const stubStoredPicture = (stored = JSON.stringify(picture)) => {
   window.localStorage.getItem = jest.fn((key: string) =>
-    key === 'pictureOfTheDay' ? JSON.stringify(picture) : null
+    key === 'pictureOfTheDay' ? stored : null
   );
 };
 
@@ -102,9 +102,7 @@ describe('Apod', () => {
     ['a cached entry without a url', JSON.stringify({ date: '2020-01-01' })],
     ['a corrupt cached entry', 'not-json']
   ])('fetches today on mount when storage has %s', async (_case, stored) => {
-    window.localStorage.getItem = jest.fn((key: string) =>
-      key === 'pictureOfTheDay' ? stored : null
-    );
+    stubStoredPicture(stored);
     await renderApod(<Apod {...props} />);
     expect(props.getPictureOfTheDay).toHaveBeenCalledTimes(1);
     expect(props.getPictureOfTheDay).toHaveBeenCalledWith(TODAY);
