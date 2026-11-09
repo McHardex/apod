@@ -5,6 +5,11 @@ import apodService from 'services/apod';
 
 export type ApodAction = ReturnType<typeof typedAction>;
 
+// Network/CORS/timeout failures have no `response`; fall back to the error message
+// so the failure is still dispatched and the error screen can render `msg`.
+const toErrorPayload = (error: any) =>
+  error?.response?.data ?? { msg: error?.message || 'Something went wrong' };
+
 export const getPictureOfTheDay = (date: string) => async (dispatch: Dispatch<AnyAction>) => {
   dispatch(typedAction(types.GET_PICTURE_OF_THE_DAY));
   try {
@@ -12,7 +17,7 @@ export const getPictureOfTheDay = (date: string) => async (dispatch: Dispatch<An
     localStorage.setItem('pictureOfTheDay', JSON.stringify(res.data));
     dispatch(typedAction(types.GET_PICTURE_OF_THE_DAY_SUCCESS, res.data));
   } catch (error) {
-    dispatch(typedAction(types.GET_PICTURE_OF_THE_DAY_FAILURE, error.response.data));
+    dispatch(typedAction(types.GET_PICTURE_OF_THE_DAY_FAILURE, toErrorPayload(error)));
   }
 };
 
@@ -22,6 +27,6 @@ export const getPreviousOrNextPicture = (date: string) => async (dispatch: Dispa
     const res = await apodService.getPictureOfTheDay(date);
     dispatch(typedAction(types.GET_PREVIOUS_OR_NEXT_DAY_PICTURE_SUCCESS, res.data));
   } catch (error) {
-    dispatch(typedAction(types.GET_PREVIOUS_OR_NEXT_DAY_PICTURE_FAILURE, error.response.data));
+    dispatch(typedAction(types.GET_PREVIOUS_OR_NEXT_DAY_PICTURE_FAILURE, toErrorPayload(error)));
   }
 };
