@@ -1,6 +1,5 @@
 import { formatDate, nextDay, previousDay } from 'utilities';
 
-// jest.globalSetup.js pins TZ=America/New_York: the UTC-parsing bug only shows up behind UTC.
 describe('date utilities', () => {
   test('runs in a timezone behind UTC', () => {
     expect(new Date(2020, 5, 6).getTimezoneOffset()).toBeGreaterThan(0);

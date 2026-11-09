@@ -115,12 +115,31 @@ describe('Apod', () => {
     expect(rescueMeBtn).toBeInTheDocument();
   });
 
-  test('rescue falls back to the first APOD date when no rescue date is configured', async () => {
-    window.localStorage.getItem = jest.fn((key: string) =>
-      key === 'pictureOfTheDay' ? JSON.stringify(picture) : null
-    );
-    await renderApod(<Apod {...props} picture={{ msg: 'no picture of the day' } as Picture} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Rescue me' }));
-    expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith('1995-06-16');
+  describe('rescue', () => {
+    const configuredRescueDate = process.env.REACT_APP_RESCUE_USER_DATE;
+
+    const clickRescue = async () => {
+      window.localStorage.getItem = jest.fn((key: string) =>
+        key === 'pictureOfTheDay' ? JSON.stringify(picture) : null
+      );
+      await renderApod(<Apod {...props} picture={{ msg: 'no picture of the day' } as Picture} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Rescue me' }));
+    };
+
+    afterEach(() => {
+      process.env.REACT_APP_RESCUE_USER_DATE = configuredRescueDate;
+    });
+
+    test('loads the configured rescue date', async () => {
+      process.env.REACT_APP_RESCUE_USER_DATE = '2020-06-16';
+      await clickRescue();
+      expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith('2020-06-16');
+    });
+
+    test('falls back to the first APOD date when no rescue date is configured', async () => {
+      delete process.env.REACT_APP_RESCUE_USER_DATE;
+      await clickRescue();
+      expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith('1995-06-16');
+    });
   });
 });
