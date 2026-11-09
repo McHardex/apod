@@ -70,11 +70,10 @@ export const Apod: React.FC<Props> = ({
   isLoading
 }) => {
   const favoritesRef = useRef<HTMLDivElement>(null);
-  const initialDateValue = localStorage.getItem('pictureOfTheDay');
-
-  const [dateValue, setDateValue] = useState(
-    initialDateValue ? JSON.parse(initialDateValue).date : formatDate(new Date())
-  );
+  const [dateValue, setDateValue] = useState(() => {
+    const storedPictureOfTheDay = JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}');
+    return storedPictureOfTheDay.url ? storedPictureOfTheDay.date : formatDate(new Date());
+  });
   const [favorites, setFavorites] = useState(JSON.parse(localStorage.getItem('favorites') || '[]'));
   const [hoverValue, setHoverValues] = useState<HoverValue>({ id: '', date: '' });
 
@@ -85,24 +84,13 @@ export const Apod: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    const storedPictureOfTheDay = JSON.parse(localStorage.getItem('pictureOfTheDay') || '{}');
-
-    if (storedPictureOfTheDay.url) {
-      setDateValue(storedPictureOfTheDay.date);
-    } else {
-      const currentDate = formatDate(new Date());
-      setDateValue(currentDate);
-      getPictureOfTheDay(currentDate);
-    }
     getFavoritePictures();
   }, []);
 
+  // Single fetch path: every navigation (initial load, date input, prev/next,
+  // favorites, rescue) goes through setDateValue.
   useEffect(() => {
-    const getUpdatedPictureOfTheDay = async () => {
-      getPictureOfTheDay(dateValue || formatDate(new Date()));
-    };
-
-    getUpdatedPictureOfTheDay();
+    getPictureOfTheDay(dateValue || formatDate(new Date()));
   }, [dateValue]);
 
   // Handle date change
