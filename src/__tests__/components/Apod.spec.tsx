@@ -2,7 +2,6 @@ import React from 'react';
 import { Apod } from 'components/Apod';
 import { picture } from 'mocks';
 import { act, render, screen, fireEvent } from '@testing-library/react';
-import { formatDate, previousDay } from 'utilities';
 import { Picture } from 'types';
 import firebaseService from 'services/firebaseService';
 
@@ -29,8 +28,20 @@ const renderApod = async (ui: React.ReactElement) => {
   });
 };
 
+const TODAY = '2020-10-30';
+
 describe('Apod', () => {
+  beforeAll(() => {
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(new Date(2020, 9, 30, 12));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   beforeEach(() => {
+    jest.clearAllMocks();
     (firebaseService.get as jest.Mock).mockResolvedValue([]);
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -54,9 +65,9 @@ describe('Apod', () => {
   test('renders picture details successfullty fetching the picture data', async () => {
     await renderApod(<Apod {...props} />);
     const title = await screen.getByText(/The Ghoul of IC 2118/);
-    const backBtn = await screen.findByTestId('previous-picture');
+    const backBtn = screen.getByTestId('previous-picture');
     const img = await screen.getByRole('img');
-    const nextBtn = await screen.findByTestId('next-picture');
+    const nextBtn = screen.getByTestId('next-picture');
     const pictureDescriptionWrapper = screen.getByText(picture.explanation);
     expect(title).toBeInTheDocument();
     expect(backBtn).toBeInTheDocument();
@@ -69,7 +80,7 @@ describe('Apod', () => {
   test('fetches the picture of the day exactly once on mount', async () => {
     await renderApod(<Apod {...props} />);
     expect(props.getPictureOfTheDay).toHaveBeenCalledTimes(1);
-    expect(props.getPictureOfTheDay).toHaveBeenCalledWith(formatDate(new Date()));
+    expect(props.getPictureOfTheDay).toHaveBeenCalledWith(TODAY);
   });
 
   test('fetches the stored picture date on mount when one is cached', async () => {
@@ -83,14 +94,14 @@ describe('Apod', () => {
 
   test('call getPictureOfTheDay when the user clicks the back button', async () => {
     await renderApod(<Apod {...props} />);
-    const backBtn = await screen.findByTestId('previous-picture');
+    const backBtn = screen.getByTestId('previous-picture');
     fireEvent.click(backBtn);
-    expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith(previousDay(formatDate(new Date())));
+    expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith('2020-10-29');
   });
 
   test('call getPictureOfTheDay when  user changes the date input value', async () => {
     await renderApod(<Apod {...props} />);
-    const input = await screen.getByDisplayValue(formatDate(new Date()));
+    const input = await screen.getByDisplayValue(TODAY);
 
     await fireEvent.change(input, { target: { value: '2020-01-01' } });
     expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith('2020-01-01');
@@ -102,5 +113,14 @@ describe('Apod', () => {
     const rescueMeBtn = await screen.getByRole('button');
     expect(errorMessage).toBeInTheDocument();
     expect(rescueMeBtn).toBeInTheDocument();
+  });
+
+  test('rescue falls back to the first APOD date when no rescue date is configured', async () => {
+    window.localStorage.getItem = jest.fn((key: string) =>
+      key === 'pictureOfTheDay' ? JSON.stringify(picture) : null
+    );
+    await renderApod(<Apod {...props} picture={{ msg: 'no picture of the day' } as Picture} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Rescue me' }));
+    expect(props.getPictureOfTheDay).toHaveBeenLastCalledWith('1995-06-16');
   });
 });

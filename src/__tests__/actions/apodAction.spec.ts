@@ -29,30 +29,40 @@ describe('APOD actions', () => {
     expect(window.localStorage.setItem).toHaveBeenCalledTimes(1);
   });
 
-  it('dispatches the API error body on failure', async () => {
-    const store = mockStore();
-    mockedApodService.getPictureOfTheDay.mockRejectedValue({
-      response: { data: { msg: 'Date must be between Jun 16, 1995 and today.' } }
+  describe.each([
+    [
+      'getPictureOfTheDay',
+      getPictureOfTheDay,
+      types.GET_PICTURE_OF_THE_DAY,
+      types.GET_PICTURE_OF_THE_DAY_FAILURE
+    ],
+    [
+      'getPreviousOrNextPicture',
+      getPreviousOrNextPicture,
+      types.GET_PREVIOUS_OR_NEXT_DAY_PICTURE,
+      types.GET_PREVIOUS_OR_NEXT_DAY_PICTURE_FAILURE
+    ]
+  ])('%s failure', (_name, action, pendingType, failureType) => {
+    it('dispatches the API error body', async () => {
+      const store = mockStore();
+      mockedApodService.getPictureOfTheDay.mockRejectedValue({
+        response: { data: { msg: 'Date must be between Jun 16, 1995 and today.' } }
+      });
+      await store.dispatch(action('1990-01-01'));
+      expect(store.getActions()).toEqual([
+        { type: pendingType, payload: undefined },
+        { type: failureType, payload: { msg: 'Date must be between Jun 16, 1995 and today.' } }
+      ]);
     });
-    await store.dispatch(getPictureOfTheDay('1990-01-01'));
-    expect(store.getActions()).toContainEqual({
-      type: types.GET_PICTURE_OF_THE_DAY_FAILURE,
-      payload: { msg: 'Date must be between Jun 16, 1995 and today.' }
-    });
-  });
 
-  it('dispatches a failure with the error message when there is no response', async () => {
-    const store = mockStore();
-    mockedApodService.getPictureOfTheDay.mockRejectedValue(new Error('Network Error'));
-    await store.dispatch(getPictureOfTheDay('2020-06-06'));
-    await store.dispatch(getPreviousOrNextPicture('2020-06-07'));
-    expect(store.getActions()).toContainEqual({
-      type: types.GET_PICTURE_OF_THE_DAY_FAILURE,
-      payload: { msg: 'Network Error' }
-    });
-    expect(store.getActions()).toContainEqual({
-      type: types.GET_PREVIOUS_OR_NEXT_DAY_PICTURE_FAILURE,
-      payload: { msg: 'Network Error' }
+    it('dispatches the error message when there is no response', async () => {
+      const store = mockStore();
+      mockedApodService.getPictureOfTheDay.mockRejectedValue(new Error('Network Error'));
+      await store.dispatch(action('2020-06-06'));
+      expect(store.getActions()).toEqual([
+        { type: pendingType, payload: undefined },
+        { type: failureType, payload: { msg: 'Network Error' } }
+      ]);
     });
   });
 });

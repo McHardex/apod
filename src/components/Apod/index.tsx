@@ -51,6 +51,8 @@ type HoverValue = {
   date: string;
 };
 
+const FIRST_APOD_DATE = '1995-06-16';
+
 const defaultPicture = {
   id: '',
   msg: '',
@@ -87,8 +89,7 @@ export const Apod: React.FC<Props> = ({
     getFavoritePictures();
   }, []);
 
-  // Single fetch path: every navigation (initial load, date input, prev/next,
-  // favorites, rescue) goes through setDateValue.
+  // Fetch only via this effect: navigate by calling setDateValue, not getPictureOfTheDay.
   useEffect(() => {
     getPictureOfTheDay(dateValue || formatDate(new Date()));
   }, [dateValue]);
@@ -190,7 +191,7 @@ export const Apod: React.FC<Props> = ({
   };
 
   const rescueUser = () => {
-    setDateValue(process.env.REACT_APP_RESCUE_USER_DATE);
+    setDateValue(process.env.REACT_APP_RESCUE_USER_DATE || FIRST_APOD_DATE);
   };
 
   if (isLoading)
@@ -265,7 +266,7 @@ export const Apod: React.FC<Props> = ({
           <input
             type="date"
             className="custom-btn"
-            min="1995-06-16"
+            min={FIRST_APOD_DATE}
             max={formatDate(new Date())}
             value={dateValue ? dateValue : ''}
             onChange={handleDateChange}

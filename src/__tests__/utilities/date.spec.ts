@@ -1,7 +1,11 @@
 import { formatDate, nextDay, previousDay } from 'utilities';
 
-// `yarn test` pins TZ=America/New_York: the UTC-parsing bug only shows up behind UTC.
+// jest.globalSetup.js pins TZ=America/New_York: the UTC-parsing bug only shows up behind UTC.
 describe('date utilities', () => {
+  test('runs in a timezone behind UTC', () => {
+    expect(new Date(2020, 5, 6).getTimezoneOffset()).toBeGreaterThan(0);
+  });
+
   test('formatDate zero-pads month and day', () => {
     expect(formatDate(new Date(2020, 0, 5))).toBe('2020-01-05');
     expect(formatDate(new Date(2020, 11, 31))).toBe('2020-12-31');
